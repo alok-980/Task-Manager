@@ -555,3 +555,25 @@ updateStats();
 document.getElementById('task-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') addTask();
 });
+
+// ─── HAMBURGER MENU ───────────────────────────────────
+
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const btn = document.getElementById('hamburger-btn');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    sidebar.classList.toggle('open');
+    btn.classList.toggle('open');
+    overlay.classList.toggle('active');
+}
+
+function closeSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const btn = document.getElementById('hamburger-btn');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    sidebar.classList.remove('open');
+    btn.classList.remove('open');
+    overlay.classList.remove('active');
+}
