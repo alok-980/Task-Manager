@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskFlow – DOM Mastery Project</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <div class="app-shell">
+
+        <!-- ─── SIDEBAR ─── -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">⚡ <span>Task<b style="color:var(--primary)">Flow</b></span></div>
+
+            <span class="sidebar-label">Main</span>
+            <button class="nav-item active" onclick="showSection('tasks')">
+                <span class="icon">✅</span> Task Manager
+            </button>
+            <button class="nav-item" onclick="showSection('attr')">
+                <span class="icon">🏷️</span> Attributes vs Props
+            </button>
+
+            <div class="sidebar-divider"></div>
+            <span class="sidebar-label">Deep Dive</span>
+            <button class="nav-item" onclick="showSection('events')">
+                <span class="icon">⚡</span> Event Propagation
+            </button>
+            <button class="nav-item" onclick="showSection('pipeline')">
+                <span class="icon">🧠</span> Browser Pipeline
+            </button>
+
+            <div class="sidebar-divider" style="margin-top:auto"></div>
+            <button class="nav-item" onclick="clearAllTasks()">
+                <span class="icon">🗑️</span> Clear All Tasks
+            </button>
+        </aside>
+
+        <!-- ─── MAIN ─── -->
+        <main class="main">
+
+            <!-- HEADER -->
+            <div class="page-header">
+                <div>
+                    <div class="page-title" id="section-title">Task Manager</div>
+                    <div class="page-sub" id="section-sub">Manage, organise and track your tasks</div>
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <span id="theme-label">🌙 Dark</span>
+                    <div class="toggle-pill"></div>
+                </button>
+            </div>
+
+            <!-- ════════════════════════════════════
+                 SECTION 1: TASK MANAGER
+            ════════════════════════════════════ -->
+            <div id="section-tasks" class="section active">
+
+                <!-- Stats -->
+                <div class="stats-row">
+                    <div class="stat-card total">
+                        <div class="stat-label">Total</div>
+                        <div class="stat-value" id="stat-total">0</div>
+                    </div>
+                    <div class="stat-card done">
+                        <div class="stat-label">Completed</div>
+                        <div class="stat-value" id="stat-done">0</div>
+                    </div>
+                    <div class="stat-card pending">
+                        <div class="stat-label">Pending</div>
+                        <div class="stat-value" id="stat-pending">0</div>
+                    </div>
+                    <div class="stat-card cats">
+                        <div class="stat-label">Categories</div>
+                        <div class="stat-value" id="stat-cats">0</div>
+                    </div>
+                </div>
+
+                <!-- Add Task Form -->
+                <div class="form-card">
+                    <div class="form-title">➕ Add New Task</div>
+                    <div class="form-row">
+                        <div class="field">
+                            <label for="task-input">Task Title</label>
+                            <input type="text" id="task-input" placeholder="What needs to be done?"
+                                value="Learn Event Delegation" />
+                        </div>
+                        <div class="field">
+                            <label for="cat-select">Category</label>
+                            <select id="cat-select">
+                                <option value="work">💼 Work</option>
+                                <option value="personal">🏠 Personal</option>
+                                <option value="study" selected>📚 Study</option>
+                                <option value="health">💪 Health</option>
+                                <option value="other">🔖 Other</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="addTask()">➕ Add Task</button>
+                    </div>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="toolbar">
+                    <div class="search-wrap">
+                        <input type="text" id="search-input" placeholder="Search tasks…" oninput="filterTasks()" />
+                    </div>
+                    <select class="filter-select" id="filter-cat" onchange="filterTasks()">
+                        <option value="all">All Categories</option>
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="study">Study</option>
+                        <option value="health">Health</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <select class="filter-select" id="filter-status" onchange="filterTasks()">
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+
+                <!-- Task List (Event Delegation: single listener on container) -->
+                <div id="tasks-container">
+                    <div class="empty-state" id="empty-state">
+                        <div class="big">📭</div>
+                        <p>No tasks yet. Add your first task above!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ════════════════════════════════════
+                 SECTION 2: ATTRIBUTES vs PROPERTIES
+            ════════════════════════════════════ -->
+            <div id="section-attr" class="section">
+
+                <div class="demo-card">
+                    <h3>🏷️ Attributes vs Properties — Live Demo</h3>
+                    <p>
+                        An <b>attribute</b> is defined in HTML and reflects the <em>initial/default</em> value.
+                        A <b>property</b> is the live DOM value that changes as the user interacts.
+                        They start equal but diverge once the user types.
+                    </p>
+
+                    <div class="field" style="max-width:400px">
+                        <label>Type something in the input below:</label>
+                        <input type="text" id="demo-input" value="Hello World" oninput="updateAttrDemo()"
+                            style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:0.9rem;font-family:'Inter',sans-serif;outline:none;margin-top:6px;" />
+                    </div>
+
+                    <div class="demo-grid mt-16">
+                        <div class="demo-box">
+                            <h4 style="color:var(--info)">Property — <code>input.value</code></h4>
+                            <p style="font-size:0.78rem;color:var(--text-muted)">
+                                This is the <em>live</em> DOM property. It reflects what the user currently has typed.
+                                Changes in real-time.
+                            </p>
+                            <div class="demo-output" id="prop-out">Hello World</div>
+                        </div>
+                        <div class="demo-box">
+                            <h4 style="color:var(--warning)">Attribute — <code>getAttribute("value")</code></h4>
+                            <p style="font-size:0.78rem;color:var(--text-muted)">
+                                This is the <em>HTML attribute</em>. It stays fixed to the initial HTML value
+                                unless you call <code>setAttribute()</code>.
+                            </p>
+                            <div class="demo-output" id="attr-out">Hello World</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="demo-card">
+                    <h3>🔧 data-* Attribute Playground</h3>
+                    <p>Every task card stores its state using custom data attributes. Here you can inspect them live.
+                    </p>
+                    <div id="attr-task-list" style="display:flex;flex-direction:column;gap:10px;margin-top:8px;"></div>
+                </div>
+
+                <div class="demo-card">
+                    <h3>📋 Attribute API Methods</h3>
+                    <p>Demonstrations of all four attribute methods in the console (open DevTools to see).</p>
+                    <div class="chip-row">
+                        <button class="chip active" onclick="demoGetAttr()">getAttribute()</button>
+                        <button class="chip" onclick="demoSetAttr()">setAttribute()</button>
+                        <button class="chip" onclick="demoRemoveAttr()">removeAttribute()</button>
+                        <button class="chip" onclick="demoHasAttr()">hasAttribute()</button>
+                        <button class="chip" onclick="demoDataset()">dataset</button>
+                    </div>
+                    <div class="demo-output mt-16" id="attr-console" style="min-height:60px;">Click a method above to
+                        see output here…</div>
+                </div>
+            </div>
+
+            <!-- ════════════════════════════════════
+                 SECTION 3: EVENT PROPAGATION
+            ════════════════════════════════════ -->
+            <div id="section-events" class="section">
+
+                <!-- BUBBLING -->
+                <div class="prop-demo">
+                    <h3>⬆️ Event Bubbling</h3>
+                    <p>
+                        Bubbling: events fire on the <strong>target</strong> first, then travel <em>up</em> to
+                        ancestors.
+                        Click the Child button — watch the order in the log.
+                        <br><code style="font-size:0.78rem;color:var(--info)">addEventListener(event, handler)</code> —
+                        default is bubbling (3rd arg = false)
+                    </p>
+
+                    <div class="prop-box grandparent" id="gp-bubble">
+                        Grandparent 👴
+                        <div class="prop-box parent" id="p-bubble">
+                            Parent 👨
+                            <br /><br />
+                            <button class="child-btn" id="child-bubble">Click Me (Child) 👶</button>
+                        </div>
+                    </div>
+
+                    <div class="prop-log" id="bubble-log">
+                        <span style="color:var(--text-muted);font-style:italic">Click the button to see bubbling…</span>
+                    </div>
+                    <div class="flex-between mt-16">
+                        <button class="btn btn-ghost btn-sm" onclick="clearLog('bubble-log')">Clear Log</button>
+                    </div>
+                </div>
+
+                <!-- CAPTURING -->
+                <div class="prop-demo">
+                    <h3>⬇️ Event Capturing</h3>
+                    <p>
+                        Capturing: events fire on <strong>outermost</strong> ancestor first, travel <em>down</em> to
+                        target.
+                        <br><code
+                            style="font-size:0.78rem;color:var(--info)">addEventListener(event, handler, <strong>true</strong>)</code>
+                        — 3rd arg = true enables capture
+                    </p>
+
+                    <div class="prop-box grandparent" id="gp-capture">
+                        Grandparent 👴
+                        <div class="prop-box parent" id="p-capture">
+                            Parent 👨
+                            <br /><br />
+                            <button class="child-btn" id="child-capture">Click Me (Child) 👶</button>
+                        </div>
+                    </div>
+
+                    <div class="prop-log" id="capture-log">
+                        <span style="color:var(--text-muted);font-style:italic">Click the button to see
+                            capturing…</span>
+                    </div>
+                    <div class="flex-between mt-16">
+                        <button class="btn btn-ghost btn-sm" onclick="clearLog('capture-log')">Clear Log</button>
+                    </div>
+                </div>
+
+                <!-- DELEGATION -->
+                <div class="prop-demo">
+                    <h3>🎯 Event Delegation — Live Example</h3>
+                    <p>
+                        One listener on the <strong>parent</strong> handles clicks on dynamically added children.
+                        <code style="font-size:0.78rem;color:var(--info)">event.target</code> identifies which element
+                        was clicked.
+                        This is exactly how the Task Manager above works!
+                    </p>
+                    <div id="delegation-demo" style="display:flex;flex-direction:column;gap:8px;">
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;" id="delegation-list">
+                            <button class="chip active" data-item="Apple">🍎 Apple</button>
+                            <button class="chip active" data-item="Banana">🍌 Banana</button>
+                            <button class="chip active" data-item="Cherry">🍒 Cherry</button>
+                        </div>
+                        <button class="btn btn-ghost btn-sm" style="width:fit-content" onclick="addDelegationItem()">+
+                            Add Fruit</button>
+                        <div class="prop-log" id="delegation-log">
+                            <span style="color:var(--text-muted);font-style:italic">Click any fruit to see delegation in
+                                action…</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ════════════════════════════════════
+                 SECTION 4: BROWSER PIPELINE
+            ════════════════════════════════════ -->
+            <div id="section-pipeline" class="section">
+
+                <div class="pipeline-section">
+                    <h2>🧠 Browser Rendering Pipeline</h2>
+                    <p class="sub">How the browser transforms raw HTML + CSS into pixels on your screen</p>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
+                        <!-- HTML side -->
+                        <div>
+                            <div
+                                style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:12px;">
+                                HTML Path</div>
+                            <div class="pipe-step step-html">
+                                <div class="step-name">📄 HTML Source</div>
+                                <div class="step-desc">Raw bytes downloaded from server</div>
+                            </div>
+                            <div class="pipe-arrow">↓</div>
+                            <div class="pipe-step step-parse">
+                                <div class="step-name">🔍 Parsing</div>
+                                <div class="step-desc">HTML Parser reads bytes sequentially</div>
+                            </div>
+                            <div class="pipe-arrow">↓</div>
+                            <div class="pipe-step step-token">
+                                <div class="step-name">🪙 Tokenization</div>
+                                <div class="step-desc">Tags converted to tokens: StartTag, EndTag, Text, Comment…</div>
+                            </div>
+                            <div class="pipe-arrow">↓</div>
+                            <div class="pipe-step step-dom">
+                                <div class="step-name">🌳 DOM Tree</div>
+                                <div class="step-desc">Tokens assembled into a tree of Node objects</div>
+                            </div>
+                        </div>
+
+                        <!-- CSS side -->
+                        <div>
+                            <div
+                                style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:12px;">
+                                CSS Path</div>
+                            <div class="pipe-step step-css">
+                                <div class="step-name">🎨 CSS Source</div>
+                                <div class="step-desc">Stylesheets, &lt;style&gt; tags, inline styles</div>
+                            </div>
+                            <div class="pipe-arrow">↓</div>
+                            <div class="pipe-step step-parse"
+                                style="border-color:var(--danger);color:var(--danger);background:#FF6B6B11;">
+                                <div class="step-name">🔍 CSS Parsing</div>
+                                <div class="step-desc">CSS Parser processes selectors and rules</div>
+                            </div>
+                            <div class="pipe-arrow">↓</div>
+                            <div class="pipe-step step-cssom">
+                                <div class="step-name">🗂️ CSSOM Tree</div>
+                                <div class="step-desc">CSS Object Model — mirrors DOM but for styles</div>
+                            </div>
+                            <div style="height:72px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Merge -->
+                    <div style="text-align:center;margin:16px 0;color:var(--text-muted);font-size:1.4rem;">↘
+                        &nbsp;&nbsp; ↙</div>
+                    <div
+                        style="background:var(--surface2);border:1.5px dashed var(--border);border-radius:8px;padding:10px;text-align:center;font-size:0.78rem;color:var(--text-muted);margin-bottom:8px;">
+                        DOM Tree + CSSOM Tree are combined
+                    </div>
+                    <div style="text-align:center;color:var(--text-muted);margin-bottom:8px;">↓</div>
+
+                    <div class="pipe-step step-render" style="max-width:360px;margin:0 auto;">
+                        <div class="step-name">✨ Render Tree</div>
+                        <div class="step-desc" style="color:var(--text-muted)">
+                            Only <em>visible</em> nodes with computed styles.<br />
+                            <code style="font-size:0.72rem">display:none</code> elements are excluded.
+                        </div>
+                    </div>
+                    <div style="text-align:center;color:var(--text-muted);margin:8px 0;">↓</div>
+                    <div class="pipe-step"
+                        style="max-width:360px;margin:0 auto;background:#38BDF822;border:1.5px solid var(--info);color:var(--info);">
+                        <div class="step-name">📐 Layout (Reflow)</div>
+                        <div class="step-desc" style="color:var(--text-muted)">Calculates exact position and size of
+                            every element</div>
+                    </div>
+                    <div style="text-align:center;color:var(--text-muted);margin:8px 0;">↓</div>
+                    <div class="pipe-step"
+                        style="max-width:360px;margin:0 auto;background:#10B98122;border:1.5px solid var(--success);color:var(--success);">
+                        <div class="step-name">🖌️ Paint</div>
+                        <div class="step-desc" style="color:var(--text-muted)">Fills in pixels — colors, borders,
+                            shadows, text</div>
+                    </div>
+                    <div style="text-align:center;color:var(--text-muted);margin:8px 0;">↓</div>
+                    <div class="pipe-step"
+                        style="max-width:360px;margin:0 auto;background:#6C63FF22;border:1.5px solid var(--primary);color:var(--primary);">
+                        <div class="step-name">🧩 Compositing</div>
+                        <div class="step-desc" style="color:var(--text-muted)">GPU combines layers and displays final
+                            output</div>
+                    </div>
+                </div>
+
+                <!-- Concept Cards -->
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>
+                            <div class="dot" style="background:var(--primary)"></div>Parsing
+                        </h4>
+                        <p>The HTML parser reads bytes sequentially and builds a tree. It is <em>error-tolerant</em> —
+                            malformed HTML is auto-corrected by the browser's parser.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>
+                            <div class="dot" style="background:var(--warning)"></div>Tokenization
+                        </h4>
+                        <p>The HTML is broken into tokens: <code>&lt;StartTag&gt;</code>, <code>&lt;EndTag&gt;</code>,
+                            <code>Text</code>, <code>Comment</code>, <code>DOCTYPE</code>. Each token maps to a node.
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <h4>
+                            <div class="dot" style="background:var(--success)"></div>DOM Tree
+                        </h4>
+                        <p>A tree of <code>Node</code> objects (<code>Element</code>, <code>Text</code>,
+                            <code>Comment</code>…) that JavaScript can read and modify via DOM APIs.
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <h4>
+                            <div class="dot" style="background:var(--danger)"></div>CSSOM Tree
+                        </h4>
+                        <p>CSS rules are parsed into a tree structure with computed styles. Inheritance and specificity
+                            are resolved here before the Render Tree is built.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>
+                            <div class="dot" style="background:var(--info)"></div>Render Tree
+                        </h4>
+                        <p>Combines DOM + CSSOM. Only <em>visible</em> elements appear. <code>display:none</code> nodes
+                            are excluded; <code>visibility:hidden</code> nodes are still included.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>
+                            <div class="dot" style="background:var(--primary)"></div>Event Bubbling
+                        </h4>
+                        <p>Events fire on the target element first, then propagate <em>up</em> through ancestors to
+                            <code>document</code>. Default behaviour (useCapture = false).
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <h4>
+                            <div class="dot" style="background:var(--warning)"></div>Event Capturing
+                        </h4>
+                        <p>Events fire on the <em>outermost</em> ancestor first and travel <em>down</em> to the target.
+                            Enabled by passing <code>true</code> as 3rd arg to <code>addEventListener</code>.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>
+                            <div class="dot" style="background:var(--success)"></div>Event Delegation
+                        </h4>
+                        <p>Attach <strong>one listener on a parent</strong> to handle events from many children. Uses
+                            <code>event.target</code> to identify the source. Efficient — works for dynamic elements
+                            too.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
